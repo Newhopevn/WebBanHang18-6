@@ -39,7 +39,8 @@ namespace WebBanHang.Areas.Customer.Controllers
                 cart.Add(product, 1);
                 HttpContext.Session.SetJson("CART", cart);
                 // return Json(new { msg="success", qty = cart.Quantity});
-                return RedirectToAction("Index");
+                TempData["success"] = "Product added to cart";
+                return RedirectToAction("Index", "Home");
             }
             return Json(new { msg = "error" });
         }
@@ -77,7 +78,7 @@ namespace WebBanHang.Areas.Customer.Controllers
             }
             return Json(new { msg = "error" });
         }
-        public IActionResult Update (int productId,int qty)
+        public IActionResult Update(int productId, int qty)
         {
             var product = _db.Products.FirstOrDefault(x => x.Id == productId);
             if (product != null)
@@ -107,5 +108,35 @@ namespace WebBanHang.Areas.Customer.Controllers
         //    }
         //    return NotFound();
         //}
+        #region API
+        public IActionResult AddToCartAPI(int productId)
+        {
+            var product = _db.Products.FirstOrDefault(x => x.Id == productId);
+            if (product != null)
+            {
+                Cart cart = HttpContext.Session.GetJson<Cart>("CART");
+                if (cart == null)
+                {
+                    cart = new Cart();
+                }
+                cart.Add(product, 1);
+                HttpContext.Session.SetJson("CART", cart);
+                return Json(new { msg = "Product added to cart", qty = cart.Quantity });
+                //TempData["success"] = "Product added to cart";
+                //return RedirectToAction("Index", "Home");
+            }
+            return Json(new { msg = "error" });
+        }
+        public IActionResult GetQuantityOfCart()
+        {
+            Cart cart = HttpContext.Session.GetJson<Cart>("CART");
+            if (cart != null)
+            {
+                return Json(new { qty = cart.Quantity });
+            }
+            return Json(new { qty = 0 });
+        }
+
     }
 }
+#endregion
