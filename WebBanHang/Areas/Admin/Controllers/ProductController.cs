@@ -27,7 +27,7 @@ namespace WebBanHang.Controllers
             //var productList = _db.Products.Include(x => x.Category).ToList();
             //return View(productList);
             var pageIndex = (int)(page != null ? page : 1);
-            var pageSize = 3;
+            var pageSize = 6;
 
             var dsSanPham = _db.Products.Include(x => x.Category).ToList();
 
